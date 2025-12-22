@@ -1,0 +1,46 @@
+{
+  "name": "@clevertree/act",
+  "version": "1.0.1",
+  "description": "Minimal React-like runtime for native and web environments",
+  "main": "src/index.dom.js",
+  "types": "index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.dom.js",
+    "./android": "./src/index.android.js",
+    "./dom": "./src/index.dom.js"
+  },
+  "files": [
+    "src",
+    "index.d.ts",
+    "README.md"
+  ],
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "build": "tsc",
+    "build:android": "npx esbuild src/index.android.js --bundle --outfile=dist/act-android.bundle.js --format=iife",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "react",
+    "native",
+    "runtime",
+    "act"
+  ],
+  "author": "CleverTree",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "sideEffects": false,
+  "devDependencies": {
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "jsdom": "^27.3.0",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3"
+  }
+}
