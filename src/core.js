@@ -8,6 +8,8 @@ export function createAct(renderer) {
     var hookCursor = {};
     var pendingEffects = [];
     var currentPath = "root";
+    var suspenseStack = [];
+    var SUSPENSE_TYPE = typeof Symbol !== 'undefined' ? Symbol.for('act.suspense') : '__act_suspense__';
 
     function log(level, message) {
         try {
@@ -19,7 +21,7 @@ export function createAct(renderer) {
             if (level === 'error' && typeof g.__log === 'function') {
                 g.__log('error', '[act] ' + message);
             }
-        } catch (e) {}
+        } catch (e) { }
     }
 
     function emitError(message) {
@@ -100,6 +102,20 @@ export function createAct(renderer) {
         renderNow();
     }
 
+    function pushSuspense(fallback) {
+        suspenseStack.push(fallback);
+    }
+
+    function popSuspense() {
+        if (suspenseStack.length > 0) {
+            suspenseStack.pop();
+        }
+    }
+
+    function currentSuspenseFallback() {
+        return suspenseStack.length > 0 ? suspenseStack[suspenseStack.length - 1] : null;
+    }
+
     function renderComponent(fn, props, path) {
         if (typeof fn !== 'function') return fn;
         resetHookCursor(path);
@@ -158,7 +174,11 @@ export function createAct(renderer) {
                 makePath,
                 renderComponent,
                 log,
-                emitError
+                emitError,
+                pushSuspense,
+                popSuspense,
+                currentSuspenseFallback,
+                suspenseType: SUSPENSE_TYPE
             });
             flushEffects();
         } catch (e) {
@@ -233,6 +253,56 @@ export function createAct(renderer) {
         return useMemo(function () { return fn; }, deps);
     }
 
+    function lazy(loader) {
+        var resolved = null;
+        var loading = null;
+        var failed = null;
+
+        return function LazyComponent(props) {
+            var state = useState(function () { return resolved; });
+            var Component = resolved || state[0];
+
+            if (!Component && !loading && !failed) {
+                try {
+                    loading = Promise.resolve(loader()).then(function (mod) {
+                        resolved = mod && mod.default ? mod.default : mod;
+                        state[1](resolved);
+                    }).catch(function (err) {
+                        failed = err || new Error('lazy loader failed');
+                        scheduleRender();
+                    });
+                } catch (e) {
+                    failed = e;
+                }
+            }
+
+            if (failed) {
+                throw failed;
+            }
+
+            if (Component) {
+                return createElement(Component, props);
+            }
+
+            var fallback = currentSuspenseFallback();
+            return fallback !== undefined ? fallback : null;
+        };
+    }
+
+    function Suspense(props) {
+        // Return a virtual node with special type marker
+        // Renderer will check for this type and handle fallback
+        var children = props && props.children;
+        if (Array.isArray(children) && children.length === 1) {
+            children = children[0];
+        }
+        return {
+            type: SUSPENSE_TYPE,
+            props: { fallback: props && props.fallback, children: children },
+            children: []
+        };
+    }
+
     function createContext(defaultValue) {
         var context = {
             _currentValue: defaultValue,
@@ -276,6 +346,7 @@ export function createAct(renderer) {
         resetTags();
         componentState = {};
         hookCursor = {};
+        suspenseStack = [];
     }
 
     var StyleSheet = {
@@ -298,6 +369,8 @@ export function createAct(renderer) {
         createContext,
         useContext,
         Fragment: 'div',
+        Suspense,
+        lazy,
         memo: function (comp) { return comp; },
         forwardRef: function (comp) { return comp; },
         StyleSheet,

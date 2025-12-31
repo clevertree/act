@@ -12,6 +12,8 @@ export interface Act {
     createContext<T>(defaultValue: T): { Provider: (props: { value: T; children?: any }) => any; _currentValue: T };
     useContext<T>(context: { _currentValue: T }): T;
     Fragment: any;
+    Suspense(props: { fallback?: any; children?: any }): any;
+    lazy<T>(loader: () => Promise<{ default: T } | T>): T;
     memo<T>(comp: T): T;
     forwardRef<T>(comp: T): T;
 }

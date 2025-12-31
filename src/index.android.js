@@ -4,7 +4,7 @@ import { createAndroidRenderer } from './renderer-android.js';
 const renderer = createAndroidRenderer();
 const Act = createAct(renderer);
 
-// ReactNative-like components
+// Android/iOS Native-like components
 export const View = (props) => Act.createElement('view', props);
 export const Text = (props) => Act.createElement('text', props);
 export const Image = (props) => Act.createElement('image', props);
@@ -24,7 +24,7 @@ if (g) {
     g.Act = Act;
     g.React = Act;
     
-    // ReactNative parity
+    // Android/iOS Native parity
     g.ReactNative = {
         View,
         Text,

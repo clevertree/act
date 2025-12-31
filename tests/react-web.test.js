@@ -13,9 +13,11 @@ test('React Web Parity Tests', async (t) => {
     globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
     const container = document.body;
-    
+
     const ActShim = {
         createElement: React.createElement,
+        lazy: React.lazy,
+        Suspense: React.Suspense,
         useState: React.useState,
         useEffect: React.useEffect,
         ReactDOM: ReactDOM,
@@ -29,8 +31,10 @@ test('React Web Parity Tests', async (t) => {
     for (const [name, testFn] of Object.entries(tests)) {
         await t.test(name, async () => {
             if (container._reactRoot) {
-                container._reactRoot.unmount();
-                container._reactRoot = null;
+                await act(() => {
+                    container._reactRoot.unmount();
+                    container._reactRoot = null;
+                });
             }
             container.innerHTML = '';
             await testFn();

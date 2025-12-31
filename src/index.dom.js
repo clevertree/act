@@ -20,11 +20,50 @@ export function render(element, container) {
     return root;
 }
 
+// Create a React-compatible API surface using a default renderer
+const defaultRenderer = createDomRenderer(null);
+const defaultAct = createAct(defaultRenderer);
+
+// Export all hooks and utilities as named exports for React compatibility
+export const {
+    createElement,
+    useState,
+    useEffect,
+    useLayoutEffect,
+    useRef,
+    useMemo,
+    useCallback,
+    useReducer,
+    createContext,
+    useContext,
+    Fragment,
+    Suspense,
+    lazy,
+    memo,
+    forwardRef
+} = defaultAct;
+
 const Act = {
     render,
     createRoot,
     createAct: createDomAct,
-    createCore: createAct
+    createCore: createAct,
+    // Include React-compatible exports
+    createElement,
+    useState,
+    useEffect,
+    useLayoutEffect,
+    useRef,
+    useMemo,
+    useCallback,
+    useReducer,
+    createContext,
+    useContext,
+    Fragment,
+    Suspense,
+    lazy,
+    memo,
+    forwardRef
 };
 
 export default Act;

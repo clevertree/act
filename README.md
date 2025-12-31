@@ -8,12 +8,12 @@ Minimal React-like runtime for Android and Web/DOM environments.
 - **Platform Agnostic**: Core logic is separated from rendering.
 - **Lightweight**: Zero dependencies.
 - **Multi-platform**: Built-in renderers for Android (via bridge) and Web (via DOM).
-- **Parity**: Supports basic `ReactDOM` and `ReactNative` APIs.
+- **Parity**: Supports basic `ReactDOM` and `Android/iOS Native` APIs.
 
 ## Exports
 
 - **act/dom**: Web/DOM renderer and helpers.
-- **act/android**: Android renderer and React Native parity layer.
+- **act/android**: Android renderer and Android/iOS Native parity layer.
 
 This package is ESM-only and targets modern environments.
 
@@ -49,10 +49,10 @@ root.render(<App />);
 
 ### Android Environment (act/android)
 
-In an Android environment using QuickJS and a bridge, `@clevertree/act/android` automatically initializes and registers itself to `globalThis.Act` and `globalThis.React`. It also provides `ReactNative` component parity.
+In an Android environment using QuickJS and a bridge, `@clevertree/act/android` automatically initializes and registers itself to `globalThis.Act` and `globalThis.React`. It also provides `Android/iOS Native` component parity (supporting transitions to Android/iOS Native).
 
 ```javascript
-import { View, Text, StyleSheet } from 'react-native'; // Aliased to act/android
+import { View, Text, StyleSheet } from 'android-ios-native'; // Aliased to act/android or Android/iOS Native parity
 
 const styles = StyleSheet.create({
   container: { padding: 20 }

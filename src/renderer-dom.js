@@ -4,6 +4,18 @@ export function createDomRenderer(container) {
     function mountNode(node, parentTag, index, parentType, path, helpers) {
         if (node === null || node === undefined || node === false) return;
 
+        // Check for Suspense boundary
+        if (node && node.type === helpers.suspenseType) {
+            helpers.pushSuspense(node.props ? node.props.fallback : null);
+            try {
+                var child = node.props ? node.props.children : null;
+                mountNode(child, parentTag, index, parentType, helpers.makePath(path, 's'), helpers);
+            } finally {
+                helpers.popSuspense();
+            }
+            return;
+        }
+
         if (typeof node === 'string' || typeof node === 'number') {
             var textNode = document.createTextNode(String(node));
             var parent = parentTag === -1 ? container : nodes[parentTag];
@@ -63,7 +75,7 @@ export function createDomRenderer(container) {
 
     return {
         mountNode,
-        clear: function() {
+        clear: function () {
             if (container) container.innerHTML = '';
             nodes = {};
         }

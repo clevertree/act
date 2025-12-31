@@ -298,10 +298,6 @@ It then **only emits the necessary styles**, boosting performance dramatically.
 **Web:**
 - Flat CSS string (minimal, only what’s needed)
 
-**React Native:**
-- CamelCased style objects  
-- `"8px"` → `8` unit conversion  
-- Theme-based token resolution  
 
 ### ✓ Theme System  
 Supports:

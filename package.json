@@ -8,11 +8,16 @@
   "exports": {
     ".": "./src/index.dom.js",
     "./android": "./src/index.android.js",
-    "./dom": "./src/index.dom.js"
+    "./dom": {
+      "types": "./dom.d.ts",
+      "import": "./src/index.dom.js",
+      "default": "./src/index.dom.js"
+    }
   },
   "files": [
     "src",
     "index.d.ts",
+    "dom.d.ts",
     "README.md"
   ],
   "scripts": {
