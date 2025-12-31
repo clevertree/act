@@ -1,6 +1,6 @@
 {
   "name": "@clevertree/act",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Minimal React-like runtime for native and web environments",
   "main": "src/index.dom.js",
   "types": "index.d.ts",
