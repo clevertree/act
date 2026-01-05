@@ -23,9 +23,9 @@ const g = typeof globalThis !== 'undefined' ? globalThis : (typeof global !== 'u
 if (g) {
     g.Act = Act;
     g.React = Act;
-    
+
     // Android/iOS Native parity
-    g.ReactNative = {
+    g.Android = {
         View,
         Text,
         Image,
@@ -40,7 +40,7 @@ if (g) {
         jsxs: Act.createElement,
         Fragment: Act.Fragment
     };
-    
+
     // Also provide them directly for transpiled code that might look for them
     g.__jsx = Act.createElement;
     g.__jsxs = Act.createElement;

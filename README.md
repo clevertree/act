@@ -2,6 +2,34 @@
 
 Minimal React-like runtime for Android and Web/DOM environments.
 
+## Architecture
+
+```mermaid
+graph TD
+    subgraph "Core (act)"
+        Hooks[Hooks Engine]
+        VDOM[Virtual DOM]
+        Reconciler[Reconciler]
+    end
+
+    subgraph "Renderers"
+        DOM[act/dom - Web]
+        Native[act/android - Native Bridge]
+    end
+
+    subgraph "Platforms"
+        Browser[Browser / DOM]
+        Android[Android / iOS Native]
+    end
+
+    Hooks --> VDOM
+    VDOM --> Reconciler
+    Reconciler --> DOM
+    Reconciler --> Native
+    DOM --> Browser
+    Native --> Android
+```
+
 ## Features
 
 - **Hooks**: `useState`, `useEffect`, `useMemo`, `useCallback`, `useRef`, `useReducer`, `useContext`.
@@ -49,7 +77,7 @@ root.render(<App />);
 
 ### Android Environment (act/android)
 
-In an Android environment using QuickJS and a bridge, `@clevertree/act/android` automatically initializes and registers itself to `globalThis.Act` and `globalThis.React`. It also provides `Android/iOS Native` component parity (supporting transitions to Android/iOS Native).
+In an Android environment using JavaScriptCore and a bridge, `@clevertree/act/android` automatically initializes and registers itself to `globalThis.Act` and `globalThis.React`. It also provides `Android/iOS Native` component parity (supporting transitions to Android/iOS Native).
 
 ```javascript
 import { View, Text, StyleSheet } from 'android-ios-native'; // Aliased to act/android or Android/iOS Native parity
